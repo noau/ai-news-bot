@@ -43,9 +43,8 @@ class NewsFetcher:
         # Chinese news sources (zh)
         self.chinese_feeds = {
             # State Media
-            "新华网": "http://www.xinhuanet.com/rss/news.xml",
-            "人民网": "http://www.people.com.cn/rss/politics.xml",
             "中国新闻网-要闻导读": "https://www.chinanews.com.cn/rss/importnews.xml",
+            "中国新闻网-财经新闻": "https://www.chinanews.com.cn/rss/finance.xml",
             # Financial Media
             "财新网": "https://www.caixin.com/rss/newest.xml",
             # Tech Media
