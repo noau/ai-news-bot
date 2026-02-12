@@ -1,6 +1,7 @@
 """
 Email notification module using Gmail SMTP
 """
+
 import os
 import smtplib
 from email.mime.text import MIMEText
@@ -14,7 +15,7 @@ logger = setup_logger(__name__)
 
 
 class EmailNotifier:
-    """Send email notifications with AI news digest using Gmail SMTP"""
+    """Send email notifications with news digest using Gmail SMTP"""
 
     def __init__(
         self,
@@ -47,9 +48,13 @@ class EmailNotifier:
                 "Required: GMAIL_ADDRESS, GMAIL_APP_PASSWORD, EMAIL_TO"
             )
         else:
-            logger.info(f"EmailNotifier initialized with Gmail SMTP (from: {self.gmail_address})")
+            logger.info(
+                f"EmailNotifier initialized with Gmail SMTP (from: {self.gmail_address})"
+            )
 
-    def send(self, content: str, subject: Optional[str] = None, language: str = "en") -> bool:
+    def send(
+        self, content: str, subject: Optional[str] = None, language: str = "en"
+    ) -> bool:
         """
         Send email notification with news digest.
 
@@ -65,7 +70,7 @@ class EmailNotifier:
         if subject is None:
             today = datetime.now().strftime("%Y-%m-%d")
             lang_suffix = f" [{language.upper()}]" if language != "en" else ""
-            subject = f"AI News Digest - {today}{lang_suffix}"
+            subject = f"News Digest - {today}{lang_suffix}"
 
         if not all([self.gmail_address, self.gmail_app_password, self.email_to]):
             logger.error("Gmail notifier is not fully configured. Skipping email send.")
@@ -128,17 +133,20 @@ class EmailNotifier:
             html_content = markdown.markdown(
                 content,
                 extensions=[
-                    'nl2br',      # Convert newlines to <br>
-                    'tables',     # Support for tables
-                    'fenced_code',# Support for code blocks
-                    'sane_lists', # Better list handling
-                ]
+                    "nl2br",  # Convert newlines to <br>
+                    "tables",  # Support for tables
+                    "fenced_code",  # Support for code blocks
+                    "sane_lists",  # Better list handling
+                ],
             )
         except ImportError:
-            logger.warning("markdown library not installed, using basic HTML formatting")
+            logger.warning(
+                "markdown library not installed, using basic HTML formatting"
+            )
             # Fallback to basic HTML escaping and line break conversion
             import html
-            html_content = html.escape(content).replace('\n', '<br>\n')
+
+            html_content = html.escape(content).replace("\n", "<br>\n")
 
         html = f"""
         <!DOCTYPE html>

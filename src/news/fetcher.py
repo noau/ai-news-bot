@@ -1,6 +1,7 @@
 """
-News fetcher module - Fetches real-time AI news from various sources
+News fetcher module - Fetches real-time news from various sources
 """
+
 import requests
 from typing import List, Dict, Optional
 from datetime import datetime
@@ -12,52 +13,46 @@ logger = setup_logger(__name__)
 
 
 class NewsFetcher:
-    """Fetch real-time AI news from RSS feeds and news APIs"""
+    """Fetch real-time news from RSS feeds and news APIs"""
 
     def __init__(self):
         """Initialize the news fetcher"""
-        # RSS feed sources for AI news (reliable sources only)
+        # RSS feed sources for general news (reliable sources only)
         self.rss_feeds = {
-            # Major Tech Media
-            "TechCrunch AI": "https://techcrunch.com/tag/artificial-intelligence/feed/",
-            "VentureBeat AI": "https://venturebeat.com/category/ai/feed/",
+            # Politics/World News
+            "BBC World": "http://feeds.bbci.co.uk/news/world/rss.xml",
+            "BBC Top Stories": "http://feeds.bbci.co.uk/news/rss.xml?edition=int",
+            "BBC US & Canada": "http://feeds.bbci.co.uk/news/world/us_and_canada/rss.xml",
+            # Technology News
+            "TechCrunch": "https://techcrunch.com/feed/",
+            "The Verge": "https://www.theverge.com/rss/index.xml",
+            "Ars Technica": "https://feeds.arstechnica.com/arstechnica/index",
+            "Wired": "https://www.wired.com/feed/rss",
+            # Science & Research
             "MIT Technology Review": "https://www.technologyreview.com/feed/",
-            "Ars Technica AI": "https://arstechnica.com/tag/ai/feed/",
-            "Wired AI": "https://www.wired.com/feed/tag/ai/latest/rss",
-            "The Next Web": "https://thenextweb.com/feed",
-            "The Verge AI": "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml",
-            "Engadget AI": "https://www.engadget.com/tag/ai/rss.xml",
-
-            # Official AI Company Blogs
-            "OpenAI Blog": "https://openai.com/blog/rss/",
+            "Nature News": "https://www.nature.com/news/rss.xml",
+            "Science Magazine": "https://www.science.org/rss/news_current.xml",
             "Google AI Blog": "https://blog.google/technology/ai/rss/",
-            "DeepMind Blog": "https://deepmind.google/blog/rss.xml",
-            "Meta AI Blog": "https://ai.meta.com/blog/rss/",
+            "OpenAI Blog": "https://openai.com/blog/rss/",
             "Microsoft AI Blog": "https://blogs.microsoft.com/ai/feed/",
-
-            # Research & Academic
-            "arXiv AI": "https://rss.arxiv.org/rss/cs.AI",
-            "arXiv Machine Learning": "https://rss.arxiv.org/rss/cs.LG",
-            "arXiv Computer Vision": "https://rss.arxiv.org/rss/cs.CV",
-            "arXiv NLP": "https://rss.arxiv.org/rss/cs.CL",
-
-            # Industry Verticals
-            "Healthcare IT News AI": "https://www.healthcareitnews.com/taxonomy/term/31/feed",
-            "Robotics Business Review": "https://www.roboticsbusinessreview.com/feed/",
-            "Autonomous Vehicle News": "https://www.autonomousvehicleinternational.com/feed",
+            "GeekWire (AI专题)": "https://www.geekwire.com/ai/feed/",
+            "AI Hub": "https://aihub.org/feed/",
+            "Simon Willison": "https://simonwillison.net/atom/everything/",
         }
 
-        # Chinese AI news sources (zh)
+        # Chinese news sources (zh)
         self.chinese_feeds = {
-            # Tech News Outlets
+            # State Media
+            "新华网": "http://www.xinhuanet.com/rss/news.xml",
+            "人民网": "http://www.people.com.cn/rss/politics.xml",
+            "中国新闻网-要闻导读": "https://www.chinanews.com.cn/rss/importnews.xml",
+            # Financial Media
+            "财新网": "https://www.caixin.com/rss/newest.xml",
+            # Tech Media
             "36Kr (36氪)": "https://36kr.com/feed",
-            "JiQiZhiXin (机器之心)": "https://www.jiqizhixin.com/rss",
-            "Leiphone (雷锋网)": "https://www.leiphone.com/feed",
             "iFeng Tech (凤凰科技)": "https://tech.ifeng.com/rss/index.xml",
-            "Sina Tech (新浪科技)": "http://rss.sina.com.cn/tech/rollnews.xml",
-            # Google News (fallback)
-            "Google News AI (CN)": "https://news.google.com/rss/search?q=人工智能+AI&hl=zh-CN&gl=CN&ceid=CN:zh-Hans",
-            "Google News LLM (CN)": "https://news.google.com/rss/search?q=大模型+GPT+Claude&hl=zh-CN&gl=CN&ceid=CN:zh-Hans",
+            "工商時報 (科技脈動)": "https://www.ctee.com.tw/rss_web/category/v-technology",
+            "Paul Graham": "http://www.paulgraham.com/rss.xml",
         }
 
         # Japanese AI news sources (ja)
@@ -178,8 +173,9 @@ class NewsFetcher:
             "Google News AI (HI)": "https://news.google.com/rss/search?q=कृत्रिम+बुद्धिमत्ता&hl=hi&gl=IN&ceid=IN:hi",
         }
 
-
-    def fetch_rss_feed(self, feed_url: str, max_items: int = 10) -> List[Dict[str, str]]:
+    def fetch_rss_feed(
+        self, feed_url: str, max_items: int = 10
+    ) -> List[Dict[str, str]]:
         """
         Fetch news items from an RSS feed.
 
@@ -194,7 +190,7 @@ class NewsFetcher:
             logger.info(f"Fetching RSS feed: {feed_url}")
 
             headers = {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
             }
 
             response = requests.get(feed_url, headers=headers, timeout=10)
@@ -205,36 +201,44 @@ class NewsFetcher:
 
             items = []
             # Handle both RSS 2.0 and Atom formats
-            if root.tag == 'rss':
-                news_items = root.findall('.//item')[:max_items]
+            if root.tag == "rss":
+                news_items = root.findall(".//item")[:max_items]
                 for item in news_items:
-                    title = item.find('title')
-                    link = item.find('link')
-                    description = item.find('description')
-                    pub_date = item.find('pubDate')
+                    title = item.find("title")
+                    link = item.find("link")
+                    description = item.find("description")
+                    pub_date = item.find("pubDate")
 
-                    items.append({
-                        'title': title.text if title is not None else '',
-                        'link': link.text if link is not None else '',
-                        'description': self._clean_html(description.text if description is not None else ''),
-                        'published': pub_date.text if pub_date is not None else '',
-                    })
+                    items.append(
+                        {
+                            "title": title.text if title is not None else "",
+                            "link": link.text if link is not None else "",
+                            "description": self._clean_html(
+                                description.text if description is not None else ""
+                            ),
+                            "published": pub_date.text if pub_date is not None else "",
+                        }
+                    )
             else:
                 # Atom format
-                namespace = {'atom': 'http://www.w3.org/2005/Atom'}
-                entries = root.findall('.//atom:entry', namespace)[:max_items]
+                namespace = {"atom": "http://www.w3.org/2005/Atom"}
+                entries = root.findall(".//atom:entry", namespace)[:max_items]
                 for entry in entries:
-                    title = entry.find('atom:title', namespace)
-                    link = entry.find('atom:link', namespace)
-                    summary = entry.find('atom:summary', namespace)
-                    updated = entry.find('atom:updated', namespace)
+                    title = entry.find("atom:title", namespace)
+                    link = entry.find("atom:link", namespace)
+                    summary = entry.find("atom:summary", namespace)
+                    updated = entry.find("atom:updated", namespace)
 
-                    items.append({
-                        'title': title.text if title is not None else '',
-                        'link': link.get('href', '') if link is not None else '',
-                        'description': self._clean_html(summary.text if summary is not None else ''),
-                        'published': updated.text if updated is not None else '',
-                    })
+                    items.append(
+                        {
+                            "title": title.text if title is not None else "",
+                            "link": link.get("href", "") if link is not None else "",
+                            "description": self._clean_html(
+                                summary.text if summary is not None else ""
+                            ),
+                            "published": updated.text if updated is not None else "",
+                        }
+                    )
 
             logger.info(f"Fetched {len(items)} items from RSS feed")
             return items
@@ -246,13 +250,12 @@ class NewsFetcher:
     def _clean_html(self, text: str) -> str:
         """Remove HTML tags from text"""
         import re
-        clean = re.compile('<.*?>')
-        return re.sub(clean, '', text).strip()
+
+        clean = re.compile("<.*?>")
+        return re.sub(clean, "", text).strip()
 
     def fetch_recent_news(
-        self,
-        language: str = "en",
-        max_items_per_source: int = 5
+        self, language: str = "en", max_items_per_source: int = 5
     ) -> Dict[str, List[Dict[str, str]]]:
         """
         Fetch recent AI news from all configured sources.
@@ -264,19 +267,16 @@ class NewsFetcher:
         Returns:
             Dictionary with 'international' and 'domestic' news lists
         """
-        logger.info("Fetching recent AI news from all sources...")
+        logger.info("Fetching recent news from all sources...")
 
-        all_news = {
-            'international': [],
-            'domestic': []
-        }
+        all_news = {"international": [], "domestic": []}
 
         # Fetch international news
         for source_name, feed_url in self.rss_feeds.items():
             items = self.fetch_rss_feed(feed_url, max_items_per_source)
             for item in items:
-                item['source'] = source_name
-                all_news['international'].append(item)
+                item["source"] = source_name
+                all_news["international"].append(item)
 
         # Fetch domestic news based on language
         language_feeds_map = {
@@ -296,14 +296,16 @@ class NewsFetcher:
 
         feeds = language_feeds_map.get(language)
         if not feeds:
-            logger.warning(f"No domestic feeds configured for language: {language}, using international only")
+            logger.warning(
+                f"No domestic feeds configured for language: {language}, using international only"
+            )
             return all_news
 
         for source_name, feed_url in feeds.items():
             items = self.fetch_rss_feed(feed_url, max_items_per_source)
             for item in items:
-                item['source'] = source_name
-                all_news['domestic'].append(item)
+                item["source"] = source_name
+                all_news["domestic"].append(item)
 
         logger.info(
             f"Fetched {len(all_news['international'])} international news items "
@@ -312,7 +314,9 @@ class NewsFetcher:
 
         return all_news
 
-    def format_news_for_summary(self, news_data: Dict[str, List[Dict[str, str]]]) -> str:
+    def format_news_for_summary(
+        self, news_data: Dict[str, List[Dict[str, str]]]
+    ) -> str:
         """
         Format fetched news into a text suitable for AI summarization.
 
@@ -322,29 +326,29 @@ class NewsFetcher:
         Returns:
             Formatted news text
         """
-        formatted = "# Recent AI News Items to Summarize\n\n"
+        formatted = "# Recent News Items to Summarize\n\n"
 
-        if news_data['international']:
+        if news_data["international"]:
             formatted += "## International News\n\n"
-            for i, item in enumerate(news_data['international'], 1):
+            for i, item in enumerate(news_data["international"], 1):
                 formatted += f"### {i}. {item['title']}\n"
                 formatted += f"**Source:** {item['source']}\n"
-                if item['description']:
+                if item["description"]:
                     formatted += f"**Description:** {item['description'][:300]}...\n"
                 formatted += f"**Link:** {item['link']}\n"
-                if item['published']:
+                if item["published"]:
                     formatted += f"**Published:** {item['published']}\n"
                 formatted += "\n"
 
-        if news_data['domestic']:
+        if news_data["domestic"]:
             formatted += "## Domestic News\n\n"
-            for i, item in enumerate(news_data['domestic'], 1):
+            for i, item in enumerate(news_data["domestic"], 1):
                 formatted += f"### {i}. {item['title']}\n"
                 formatted += f"**Source:** {item['source']}\n"
-                if item['description']:
+                if item["description"]:
                     formatted += f"**Description:** {item['description'][:300]}...\n"
                 formatted += f"**Link:** {item['link']}\n"
-                if item['published']:
+                if item["published"]:
                     formatted += f"**Published:** {item['published']}\n"
                 formatted += "\n"
 

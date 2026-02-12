@@ -29,19 +29,19 @@ news:
 
       ## YOUR TASK - STAGE 1: NEWS SELECTION
 
-      You are a senior AI industry analyst. Analyze the {total_items} news items above and select exactly 15-20 of the highest-quality items.
+      You are a senior news analyst. Analyze the {total_items} news items above and select exactly 15-20 of the highest-quality items.
 
       ### SELECTION CRITERIA:
-      - ✅ Groundbreaking research or technical breakthroughs
-      - ✅ Major product launches or significant updates
-      - ✅ Important policy changes or regulations
-      - ✅ Large funding rounds or M&A activities
-      - ✅ Balanced coverage across categories (LLM, Agents, Research, Products, etc.)
+      - ✅ Important breaking news and major events
+      - ✅ Significant policy changes or government actions
+      - ✅ Market-moving economic or financial developments
+      - ✅ Technological breakthroughs and innovations
+      - ✅ Balanced coverage across categories (Politics, Finance, Technology, etc.)
       - ✅ Include both international and domestic news when available
-      - ✅ Prefer primary sources over secondary reporting
+      - ✅ Prefer primary sources and credible reporting
 
       ### OUTPUT FORMAT:
-      Return ONLY a JSON array of selected news IDs. No explanations, no markdown, just the JSON array.
+      Return ONLY a JSON array of selected news IDs. No explanations, no markdown, just JSON array.
 
       Example format:
       ["INT-1", "INT-5", "DOM-2", "INT-12", ...]
@@ -51,25 +51,23 @@ news:
   # Stage 2: Summarization prompt template (complete prompt for creating the digest)
   # Placeholders: {count}, {selected_news}
   stage2_prompt_template: |
-      You are a senior AI industry analyst. Create a comprehensive, in-depth news digest for the {count} pre-selected news items below.
+      You are a senior news analyst. Create a comprehensive, in-depth news digest for {count} pre-selected news items below.
 
       {selected_news}
 
       ## OUTPUT STRUCTURE:
 
       Organize news items into relevant categories (use only categories that have news):
-      1. **Large Language Models & Foundation Models** - LLM updates, new model releases, benchmarks
-      2. **AI Agents & Autonomous Systems** - Agent frameworks, autonomous AI developments
-      3. **Multimodal AI** - Vision, audio, video AI capabilities
-      4. **Research & Academic Breakthroughs** - Papers, scientific discoveries, new methods
-      5. **Product Launches & Updates** - New products, feature releases, API updates
-      6. **AI Infrastructure & Hardware** - Chips, GPUs, training infrastructure, cloud services
-      7. **Healthcare & Biomedical AI** - Medical AI, drug discovery, diagnostics
-      8. **Robotics & Autonomous Vehicles** - Robots, self-driving, embodied AI
-      9. **Enterprise & Industry Applications** - B2B solutions, industry-specific AI
-      10. **Funding & Market Dynamics** - Investments, acquisitions, valuations
-      11. **Policy & Regulation** - Government policies, AI governance, ethics
-      12. **Open Source & Community** - Open source projects, community developments
+      1. **Politics & World Affairs** - Government policies, international relations, diplomatic developments
+      2. **Business & Finance** - Market updates, corporate news, economic indicators
+      3. **Technology & Innovation** - Tech breakthroughs, product launches, digital trends
+      4. **Science & Research** - Scientific discoveries, research findings, academic news
+      5. **Healthcare & Medicine** - Medical breakthroughs, health policy, pharma news
+      6. **Environment & Climate** - Environmental issues, climate change, sustainability
+      7. **Society & Culture** - Social trends, cultural developments, education
+      8. **Sports & Entertainment** - Sports events, entertainment news, media updates
+      9. **Legal & Regulation** - Legal cases, regulatory changes, court decisions
+      10. **Regional News** - Local and regional developments
 
       ## CONTENT REQUIREMENTS:
 
@@ -77,41 +75,27 @@ news:
       1. **Clear Headline**: Informative title that captures the key development
       2. **Analytical Summary (4-6 sentences)**:
          - What happened (core news and context)
-         - Technical details, key specifications, or metrics
-         - Why it matters (industry significance and impact)
-         - Potential implications (future developments, competitive landscape)
+         - Key details, numbers, or specific information
+         - Why it matters (significance and impact)
+         - Potential implications or future developments
       3. **Source Attribution**: Always include as clickable markdown link: [Source Name](URL)
 
       ## WRITING STYLE:
-      - Professional, analytical tone suitable for industry professionals
-      - Include specific numbers, metrics, and data points when available
-      - Keep technical terminology accurate (preserve technical jargon)
-      - Balance accessibility with technical depth
-      - Provide context and analysis, not just reporting facts
-
-      ## EXAMPLE FORMAT:
-
-      ## Large Language Models & Foundation Models
-
-      ### OpenAI Releases GPT-5 with Revolutionary Capabilities
-
-      OpenAI has announced GPT-5, featuring a 10 trillion parameter architecture with unprecedented reasoning abilities. The model demonstrates 40% improvement on complex reasoning benchmarks and introduces native multimodal understanding. This release marks a significant leap in AI capability, potentially reshaping competitive dynamics in the LLM market. Enterprise customers report 3x productivity gains in early testing, suggesting immediate practical applications.
-
-      Source: [OpenAI Blog](https://openai.com/blog/gpt-5)
-
-      ---
+      - Professional, objective, and balanced news reporting
+      - Include specific facts, numbers, and data points when available
+      - Avoid bias or sensationalism
+      - Provide context and background when relevant
 
       ## QUALITY REQUIREMENTS:
       - ✅ Summarize ALL {count} items provided above (no skipping)
       - ✅ Each summary must be exactly 4-6 sentences
-      - ✅ Include specific numbers, metrics, and data when available
+      - ✅ Include specific facts and verifiable information
       - ✅ Maintain balanced coverage across different categories
       - ✅ Include both international and domestic news
-      - ✅ Prioritize accuracy over speculation
       - ✅ All sources must have clickable markdown links
 
       ## AVOID:
-      ❌ Generic statements without specifics
+      ❌ Opinionated or biased language
       ❌ Summaries shorter than 4 sentences or longer than 6 sentences
       ❌ Missing clickable links or improper markdown formatting
       ❌ Skipping any news items
